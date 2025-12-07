@@ -78,7 +78,7 @@ If you have additional questions, open an issue or check out discussions with ot
 
 ## Who Maintains and Contributes
 
-- **Authors / Maintainers:** Brendan Nave, Saveer Pande, Sindhu Bonagiri ([siabn4](https://github.com/siabn4))
+- **Authors / Maintainers:** Brendan Nave ([brendnav](https://github.com/BrendNav)), Saveer Pande ([spande102](https://github.com/Spande102)), Sindhu Bonagiri ([siabn4](https://github.com/siabn4))
 - Want to contribute? See [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) for guidelines.
 
 We welcome feedback and pull requests to continue improving Equil!
