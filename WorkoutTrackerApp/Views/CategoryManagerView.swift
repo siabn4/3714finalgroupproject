@@ -11,9 +11,10 @@ struct CategoryManagerView: View {
     @EnvironmentObject private var vm: TaskViewModel
     @State private var newCategory = ""
     @State private var showInUseAlert = false
-    
+
     var body: some View {
         List {
+            // Section to add a new category
             Section("Add Category") {
                 HStack {
                     TextField("New Category (eg., Calves)", text: $newCategory)
@@ -21,7 +22,8 @@ struct CategoryManagerView: View {
                         .buttonStyle(.borderedProminent)
                 }
             }
-            
+
+            // Section showing all categories and their usage count
             Section("All Categories") {
                 ForEach(vm.categories, id: \.self) { cat in
                     HStack {
@@ -32,6 +34,7 @@ struct CategoryManagerView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                // Allows swipe-to-delete for categories, moves tasks if deleted
                 .onDelete { idxSet in for index in idxSet { vm.deleteCategory(vm.categories[index], policy: .moveToUncategorized) }
                 }
             }

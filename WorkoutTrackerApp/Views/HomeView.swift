@@ -1,27 +1,28 @@
 import SwiftUI
 
 struct HealthDashboard: View {
-    @ObservedObject var userManager: UserManager   
+    @ObservedObject var userManager: UserManager   // Monitors user authentication/profile
 
     var body: some View {
         NavigationView {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
-                    
-                    // Search Bar
+
+                    // Custom search bar component
                     SearchBar()
 
-                    // Category Grid
+                    // Grid of workout categories (uses userManager info)
                     CategoryGrid(userManager: userManager)
-                    
-                    // Featured Program
+
+                    // Highlights a featured program
                     FeaturedProgramCard()
                         .padding(.horizontal)
 
-                    // Course Banners List
+                    // Displays recommended courses as banners/list
                     CoursesList()
                 }
             }
+            // Light gray background for dashboard
             .background(Color.gray.opacity(0.1).edgesIgnoringSafeArea(.all))
             .navigationBarHidden(true)
         }
