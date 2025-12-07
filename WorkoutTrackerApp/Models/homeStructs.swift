@@ -32,15 +32,15 @@ struct CategoryGrid: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
             
-            NavigationLink(destination: LaunchView()) {
+            NavigationLink(destination: MyProfileView()) {
                 CategoryCard(
-                    title: "Log Out",
+                    title: "My Profile",
                     color: Color(red: 0.8, green: 0.4, blue: 0.2),
                     icon: "sun.max.fill"
                 )
             }
 
-            NavigationLink(destination: LaunchView()) {
+            NavigationLink(destination: LaunchView().navigationBarBackButtonHidden(true)) {
                 CategoryCard(
                     title: "Log Out",
                     color: Color(red: 0.2, green: 0.15, blue: 0.4),
