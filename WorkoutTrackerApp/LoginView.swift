@@ -9,36 +9,46 @@ import SwiftUI
 import LocalAuthentication
 
 struct LoginView: View {
-    
-    @ObservedObject var userManager: UserManager        // ⭐ NEW
-    
+
+    @ObservedObject var userManager: UserManager
+
     @State private var username = ""
     @State private var password = ""
-    
+
     @State private var showingAlert = false
     @Binding var isAuthenticated: Bool
     @State private var alertMessage = ""
-    
-    // ⭐ Keep your original dummy login credentials
-    let correctUsername = "froggy"
-    let correctPassword = "1234"
-    
-    var body: some View {
+
+    // ⭐ Manual login accounts with linked SWAPI IDs
+    let users: [User] = [
+        User(username: "Boba Fett", password: "1234", swapiID: 22),
+        User(username: "Jar Jar Binks", password: "1234", swapiID: 36),
+        User(username: "Chewbacca", password: "1234", swapiID: 13),
+        User(username: "Shaak Ti", password: "1234", swapiID: 78),
+        User(username: "Bib Fortuna", password: "1234", swapiID: 45),
+        User(username: "Cliegg Lars", password: "1234", swapiID: 62),
+        User(username: "Tion Medon", password: "1234", swapiID: 83),
+        User(username: "Wilhuff Tarkin", password: "1234", swapiID: 12)
+
         
+    ]
+
+    var body: some View {
+
         VStack {
             Text("Login")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding()
-            
+
             TextField("Username", text: $username)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-            
+
             SecureField("Password", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-            
+
             Button(action: {
                 loginWithCredentials()
             }) {
@@ -50,13 +60,9 @@ struct LoginView: View {
                     .cornerRadius(10)
             }
             .padding(.top, 10)
-            
-            
+
             // ---- Dummy Buttons (Unchanged) ----
-            
-            Button(action: {
-                dummyFaceID()
-            }) {
+            Button(action: { dummyFaceID() }) {
                 HStack {
                     Image(systemName: "faceid").font(.title)
                     Text("Sign In with Face ID").font(.headline)
@@ -67,11 +73,8 @@ struct LoginView: View {
                 .cornerRadius(10)
             }
             .padding(.top, 10)
-            
-            
-            Button(action: {
-                dummyGoogle()
-            }) {
+
+            Button(action: { dummyGoogle() }) {
                 HStack {
                     Image(systemName: "g.circle").font(.title)
                     Text("Sign in with Google").font(.headline)
@@ -83,11 +86,8 @@ struct LoginView: View {
                 .cornerRadius(5)
             }
             .padding(.top, 10)
-            
-            
-            Button(action: {
-                dummyGoogle()
-            }) {
+
+            Button(action: { dummyGoogle() }) {
                 HStack {
                     Image(systemName: "apple.logo").font(.title)
                     Text("Sign in with AppleID").font(.headline)
@@ -99,64 +99,53 @@ struct LoginView: View {
                 .cornerRadius(5)
             }
             .padding(.top, 10)
-            
+
             Spacer()
         }
         .alert(isPresented: $showingAlert) {
             Alert(title: Text("Authentication"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
         .padding()
-        .onAppear {
-            userManager.fetchUsers()        // ⭐ Load your 8 SWAPI users
-        }
     }
-    
-    
+
     // MARK: - Login Logic
-    
+
     func loginWithCredentials() {
-        
-        // ⭐ First: Try hard-coded dummy login
-        if username == correctUsername && password == correctPassword {
-            alertMessage = "Login Successful (Dummy User)!"
+        if let user = users.first(where: { $0.username == username && $0.password == password }) {
+            alertMessage = "Login Successful!"
             showingAlert = true
             isAuthenticated = true
-            return
-        }
-        
-        // ⭐ Second: Try SWAPI user login
-        if let matchedUser = userManager.allUsers.first(where: {
-            $0.name.lowercased() == username.lowercased()
-        }) {
-            if password == matchedUser.birth_year {
-                alertMessage = "Login Successful (SWAPI User)!"
-                isAuthenticated = true
-            } else {
-                alertMessage = "Incorrect password."
-                isAuthenticated = false
-            }
+
+            // ⭐ Fetch SWAPI profile for this user
+            userManager.fetchUser(user.swapiID)
+
         } else {
-            alertMessage = "User not found."
+            alertMessage = "Incorrect username or password."
+            showingAlert = true
             isAuthenticated = false
         }
-        
-        showingAlert = true
     }
-    
-    
+
     // MARK: - Dummy Authentication Buttons
-    
+
     func dummyFaceID() {
         alertMessage = "Pretending to authenticate… Success!"
         showingAlert = true
         isAuthenticated = true
     }
-    
+
     func dummyGoogle() {
         alertMessage = "Pretending to authenticate… Success!"
         showingAlert = true
         isAuthenticated = true
     }
+}
+
+// Simple manual login model
+struct User {
+    let username: String
+    let password: String
+    let swapiID: Int
 }
 
 #Preview {

@@ -6,44 +6,30 @@
 //
 
 import Foundation
+import Combine
 
 class UserManager: ObservableObject {
-    @Published var groupOne: [SWAPIUser] = []
-    @Published var groupTwo: [SWAPIUser] = []
-    @Published var allUsers: [SWAPIUser] = []
     
-    // Your 8 specific character IDs
-    private let groupOneIDs = [36, 22, 13, 78]
-    private let groupTwoIDs = [45, 62, 83, 12]
+    @Published var profile: SWAPIUser?       // Currently logged-in user's profile
+    @Published var isLoadingProfile = false  // Track loading state for UI feedback
     
-    func fetchUsers() {
-        let allIDs = groupOneIDs + groupTwoIDs
-        
-        for id in allIDs {
-            fetchUserByID(id)
-        }
-    }
-    
-    private func fetchUserByID(_ id: Int) {
+    func fetchUser(_ id: Int) {
         guard let url = URL(string: "https://swapi.dev/api/people/\(id)/") else { return }
+        isLoadingProfile = true
         
-        URLSession.shared.dataTask(with: url) { data, _, _ in
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            defer { DispatchQueue.main.async { self.isLoadingProfile = false } }
+            
             guard let data = data else { return }
             
             do {
                 let user = try JSONDecoder().decode(SWAPIUser.self, from: data)
-                
                 DispatchQueue.main.async {
-                    self.allUsers.append(user)
-                    
-                    if self.groupOneIDs.contains(id) {
-                        self.groupOne.append(user)
-                    } else if self.groupTwoIDs.contains(id) {
-                        self.groupTwo.append(user)
-                    }
+                    self.profile = user
+                    print("Fetched profile: \(user.name) - \(user.birth_year)")
                 }
             } catch {
-                print("Failed to load user \(id):", error)
+                print("Error decoding user \(id):", error)
             }
         }.resume()
     }
