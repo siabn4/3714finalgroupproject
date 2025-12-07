@@ -9,58 +9,61 @@ import SwiftUI
 import LocalAuthentication
 
 struct LoginView: View {
-    
+
+    @ObservedObject var userManager: UserManager
+
     @State private var username = ""
     @State private var password = ""
-    
+
     @State private var showingAlert = false
     @Binding var isAuthenticated: Bool
     @State private var alertMessage = ""
-    
-    let correctUsername = "Froggy"
-    let correctPassword = "1234"
-    
+
+    // ⭐ Manual login accounts with linked SWAPI IDs
+    let users: [User] = [
+        User(username: "Boba Fett", password: "1234", swapiID: 22),
+        User(username: "Jar Jar Binks", password: "1234", swapiID: 36),
+        User(username: "Chewbacca", password: "1234", swapiID: 14),
+        User(username: "Shaak Ti", password: "1234", swapiID: 78),
+        User(username: "Bib Fortuna", password: "1234", swapiID: 45),
+        User(username: "Cliegg Lars", password: "1234", swapiID: 62),
+        User(username: "Tion Medon", password: "1234", swapiID: 83),
+        User(username: "Wilhuff Tarkin", password: "1234", swapiID: 12)
+    ]
+
     var body: some View {
-        
-        
+
         VStack {
             Text("Login")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding()
-            
-            // UI for username/password
+
             TextField("Username", text: $username)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-            
+
             SecureField("Password", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
-            
+
             Button(action: {
-                            loginWithCredentials()
-                        }) {
-                            Text("Login")
-                                .font(.headline)
-                                .padding()
-                                .foregroundColor(.white)
-                                .background(Color.green)
-                                .cornerRadius(10)
-                        }
-                        .padding(.top, 10)
-            
-            // Sign In with Face ID, Google,
-            // and AppleID Buttons
-            
-            Button(action: {
-                dummyFaceID()
+                loginWithCredentials()
             }) {
+                Text("Login")
+                    .font(.headline)
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(Color.green)
+                    .cornerRadius(10)
+            }
+            .padding(.top, 10)
+
+            // ---- Dummy Buttons (Unchanged) ----
+            Button(action: { dummyFaceID() }) {
                 HStack {
-                    Image(systemName: "faceid")
-                        .font(.title)
-                    Text("Sign In with Face ID")
-                        .font(.headline)
+                    Image(systemName: "faceid").font(.title)
+                    Text("Sign In with Face ID").font(.headline)
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -68,15 +71,11 @@ struct LoginView: View {
                 .cornerRadius(10)
             }
             .padding(.top, 10)
-            
-            Button(action: {
-                dummyGoogle()
-            }) {
+
+            Button(action: { dummyGoogle() }) {
                 HStack {
-                    Image(systemName: "g.circle")
-                        .font(.title)
-                    Text("Sign in with Google")
-                        .font(.headline)
+                    Image(systemName: "g.circle").font(.title)
+                    Text("Sign in with Google").font(.headline)
                 }
                 .padding()
                 .foregroundColor(.red)
@@ -85,15 +84,11 @@ struct LoginView: View {
                 .cornerRadius(5)
             }
             .padding(.top, 10)
-            
-            Button(action: {
-                dummyGoogle()
-            }) {
+
+            Button(action: { dummyGoogle() }) {
                 HStack {
-                    Image(systemName: "apple.logo")
-                        .font(.title)
-                    Text("Sign in with AppleID")
-                        .font(.headline)
+                    Image(systemName: "apple.logo").font(.title)
+                    Text("Sign in with AppleID").font(.headline)
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -103,8 +98,6 @@ struct LoginView: View {
             }
             .padding(.top, 10)
 
-
-            
             Spacer()
         }
         .alert(isPresented: $showingAlert) {
@@ -112,35 +105,47 @@ struct LoginView: View {
         }
         .padding()
     }
-    
-    
-    
-    
+
+    // MARK: - Login Logic
+
+    func loginWithCredentials() {
+        if let user = users.first(where: { $0.username == username && $0.password == password }) {
+            alertMessage = "Login Successful!"
+            showingAlert = true
+            isAuthenticated = true
+
+            // ⭐ Fetch SWAPI profile for this user
+            userManager.fetchUser(user.swapiID)
+
+        } else {
+            alertMessage = "Incorrect username or password."
+            showingAlert = true
+            isAuthenticated = false
+        }
+    }
+
+    // MARK: - Dummy Authentication Buttons
+
     func dummyFaceID() {
         alertMessage = "Pretending to authenticate… Success!"
         showingAlert = true
         isAuthenticated = true
     }
-    
+
     func dummyGoogle() {
         alertMessage = "Pretending to authenticate… Success!"
         showingAlert = true
         isAuthenticated = true
     }
-    
-    func loginWithCredentials() {
-            if username == correctUsername && password == correctPassword {
-                alertMessage = "Login Successful!"
-                isAuthenticated = true
-                
-            } else {
-                alertMessage = "Incorrect username or password."
-                isAuthenticated = false
-            }
-            showingAlert = true
-        }
-    
 }
+
+// Simple manual login model
+struct User {
+    let username: String
+    let password: String
+    let swapiID: Int
+}
+
 #Preview {
-    LoginView(isAuthenticated: .constant(false))
+    LoginView(userManager: UserManager(), isAuthenticated: .constant(false))
 }
