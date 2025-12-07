@@ -29,10 +29,11 @@ struct SearchBar: View {
 
 // MARK: - Category Grid
 struct CategoryGrid: View {
+    @ObservedObject var userManager: UserManager
     var body: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
             
-            NavigationLink(destination: MyProfileView()) {
+            NavigationLink(destination: MyProfileView(userManager: userManager)) {
                 CategoryCard(
                     title: "My Profile",
                     color: Color(red: 0.8, green: 0.4, blue: 0.2),

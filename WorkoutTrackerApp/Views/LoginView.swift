@@ -23,7 +23,7 @@ struct LoginView: View {
     let users: [User] = [
         User(username: "Boba Fett", password: "1234", swapiID: 22),
         User(username: "Jar Jar Binks", password: "1234", swapiID: 36),
-        User(username: "Chewbacca", password: "1234", swapiID: 14),
+        User(username: "Chewbacca", password: "1234", swapiID: 13),
         User(username: "Shaak Ti", password: "1234", swapiID: 78),
         User(username: "Bib Fortuna", password: "1234", swapiID: 45),
         User(username: "Cliegg Lars", password: "1234", swapiID: 62),

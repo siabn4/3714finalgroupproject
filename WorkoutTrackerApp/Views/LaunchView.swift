@@ -9,12 +9,13 @@ import SwiftUI
 
 struct LaunchView: View {
     @State private var isAuthenticated = false
+    @StateObject private var userManager = UserManager()   // ⭐ Create a single instance
 
     var body: some View {
         if isAuthenticated {
-            HealthDashboard()
+            HealthDashboard(userManager: userManager)
         } else {
-            LoginView(isAuthenticated: $isAuthenticated)
+            LoginView(userManager: userManager, isAuthenticated: $isAuthenticated)
         }
     }
 }
