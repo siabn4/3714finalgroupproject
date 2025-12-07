@@ -23,7 +23,7 @@ struct TaskRowView: View {
                 Text(task.title)
                     .font(.headline)
                 HStack(spacing: 8) {
-                    Label(task.category, systemImage: "dumbell")
+                    Label(task.category, systemImage: "dumbbell")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Text(task.dueDate, style: .date)

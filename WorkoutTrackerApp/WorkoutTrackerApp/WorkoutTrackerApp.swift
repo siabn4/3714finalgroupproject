@@ -7,13 +7,5 @@
 
 import SwiftUI
 
-@main
-struct WorkoutTrackerApp: App {
-    @StateObject private var viewModel = TaskViewModel()
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environmentObject(viewModel)
-        }
-    }
-}
+
+
