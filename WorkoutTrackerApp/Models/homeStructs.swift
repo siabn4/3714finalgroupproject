@@ -189,17 +189,23 @@ struct CourseBanner: View {
 struct CoursesList: View {
     var body: some View {
         VStack(spacing: 16) {
-            CourseBanner(
-                title: "Beginning Meditation",
-                color: .orange,
-                icon: "face.smiling.fill",
-                bgPattern: AnyView(
-                    Circle()
-                        .fill(Color.yellow.opacity(0.5))
-                        .offset(x: 50, y: 20)
-                )
-            )
             
+            // 1-Minute Breathing (NavigationLink)
+            NavigationLink(destination: MeditationView()) {
+                CourseBanner(
+                    title: "1 Minute Breathing",
+                    color: .cyan,
+                    icon: "face.smiling.fill",
+                    bgPattern: AnyView(
+                        Circle()
+                            .fill(Color.yellow.opacity(0.5))
+                            .offset(x: 50, y: 20)
+                    )
+                )
+            }
+            .buttonStyle(PlainButtonStyle()) // removes default blue highlighting
+            
+            // Other Course Banners
             CourseBanner(
                 title: "Basics of Journaling",
                 color: Color(red: 0.2, green: 0.6, blue: 1.0),
@@ -224,7 +230,8 @@ struct CoursesList: View {
                         .offset(x: 80, y: 0)
                 )
             )
-        }
+            
+        } // End VStack
         .padding(.horizontal)
         .padding(.bottom, 20)
     }

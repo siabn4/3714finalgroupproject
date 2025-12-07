@@ -14,6 +14,7 @@ struct MyProfileView: View {
     private var randomWorkouts: Int {
         Int.random(in: 0...1000)
     }
+    
 
     var body: some View {
         VStack(spacing: 24) {
@@ -32,10 +33,10 @@ struct MyProfileView: View {
 
                 // Age/Other info - SWAPI birth_year used for display
                 if let birthYear = userManager.profile?.birth_year {
-                    Text("Birth Year: \(birthYear)")
+                    Text("Age:  \(cleanedBirthYear(userManager.profile?.birth_year))")
                         .foregroundColor(.gray)
                 } else {
-                    Text("Birth Year: N/A")
+                    Text("Age: N/A")
                         .foregroundColor(.gray)
                 }
             }
@@ -84,6 +85,15 @@ struct MyProfileView: View {
         guard let m = mass, let mDouble = Double(m) else { return "N/A" }
         let lbs = Int(mDouble * 2.20462) // kg to lbs
         return "\(lbs) lbs"
+    }
+    
+    func cleanedBirthYear(_ birthYear: String?) -> String {
+        guard let birthYear = birthYear else { return "N/A" }
+
+        return birthYear
+            .replacingOccurrences(of: "BBY", with: "")
+            .replacingOccurrences(of: "ABY", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

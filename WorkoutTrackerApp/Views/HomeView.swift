@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HealthDashboard: View {
-    @ObservedObject var userManager: UserManager   // ⭐ required
+    @ObservedObject var userManager: UserManager   
 
     var body: some View {
         NavigationView {
@@ -12,8 +12,8 @@ struct HealthDashboard: View {
                     SearchBar()
 
                     // Category Grid
-                    CategoryGrid(userManager: userManager)   // ⭐ pass userManager
-
+                    CategoryGrid(userManager: userManager)
+                    
                     // Featured Program
                     FeaturedProgramCard()
                         .padding(.horizontal)
@@ -30,5 +30,5 @@ struct HealthDashboard: View {
 
 // MARK: - Preview
 #Preview {
-    HealthDashboard(userManager: UserManager())   // ⭐ pass dummy UserManager
+    HealthDashboard(userManager: UserManager())
 }
