@@ -31,10 +31,39 @@ struct SearchBar: View {
 struct CategoryGrid: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-            CategoryCard(title: "Meditate", color: Color(red: 0.8, green: 0.4, blue: 0.2), icon: "sun.max.fill")
-            CategoryCard(title: "Sleep", color: Color(red: 0.2, green: 0.15, blue: 0.4), icon: "moon.stars.fill")
-            CategoryCard(title: "Move", color: Color(red: 0.8, green: 0.3, blue: 0.5), icon: "figure.run")
-            CategoryCard(title: "Journal", color: Color(red: 0.1, green: 0.4, blue: 0.8), icon: "book.closed")
+            
+            NavigationLink(destination: MyProfileView()) {
+                CategoryCard(
+                    title: "My Profile",
+                    color: Color(red: 0.8, green: 0.4, blue: 0.2),
+                    icon: "sun.max.fill"
+                )
+            }
+
+            NavigationLink(destination: LaunchView().navigationBarBackButtonHidden(true)) {
+                CategoryCard(
+                    title: "Log Out",
+                    color: Color(red: 0.2, green: 0.15, blue: 0.4),
+                    icon: "moon.stars.fill"
+                )
+            }
+
+            NavigationLink(destination: ContentView()) {
+                CategoryCard(
+                    title: "Move",
+                    color: Color(red: 0.8, green: 0.3, blue: 0.5),
+                    icon: "figure.run"
+                )
+            }
+
+            NavigationLink(destination: JournalView()) {
+                CategoryCard(
+                    title: "Journal",
+                    color: Color(red: 0.1, green: 0.4, blue: 0.8),
+                    icon: "book.closed"
+                )
+            }
+
         }
         .padding(.horizontal)
     }

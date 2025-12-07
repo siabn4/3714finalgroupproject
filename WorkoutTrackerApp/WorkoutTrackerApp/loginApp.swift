@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct loginApp: App {
+    @StateObject var taskViewModel = TaskViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            LaunchView()
+            LaunchView().environmentObject(taskViewModel)
         }
     }
 }
