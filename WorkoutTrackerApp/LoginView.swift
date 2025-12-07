@@ -10,6 +10,8 @@ import LocalAuthentication
 
 struct LoginView: View {
     
+    @ObservedObject var userManager: UserManager        // ⭐ NEW
+    
     @State private var username = ""
     @State private var password = ""
     
@@ -17,11 +19,11 @@ struct LoginView: View {
     @Binding var isAuthenticated: Bool
     @State private var alertMessage = ""
     
+    // ⭐ Keep your original dummy login credentials
     let correctUsername = "froggy"
     let correctPassword = "1234"
     
     var body: some View {
-        
         
         VStack {
             Text("Login")
@@ -29,7 +31,6 @@ struct LoginView: View {
                 .fontWeight(.bold)
                 .padding()
             
-            // UI for username/password
             TextField("Username", text: $username)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
@@ -39,28 +40,26 @@ struct LoginView: View {
                 .padding()
             
             Button(action: {
-                            loginWithCredentials()
-                        }) {
-                            Text("Login")
-                                .font(.headline)
-                                .padding()
-                                .foregroundColor(.white)
-                                .background(Color.green)
-                                .cornerRadius(10)
-                        }
-                        .padding(.top, 10)
+                loginWithCredentials()
+            }) {
+                Text("Login")
+                    .font(.headline)
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(Color.green)
+                    .cornerRadius(10)
+            }
+            .padding(.top, 10)
             
-            // Sign In with Face ID, Google,
-            // and AppleID Buttons
+            
+            // ---- Dummy Buttons (Unchanged) ----
             
             Button(action: {
                 dummyFaceID()
             }) {
                 HStack {
-                    Image(systemName: "faceid")
-                        .font(.title)
-                    Text("Sign In with Face ID")
-                        .font(.headline)
+                    Image(systemName: "faceid").font(.title)
+                    Text("Sign In with Face ID").font(.headline)
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -69,14 +68,13 @@ struct LoginView: View {
             }
             .padding(.top, 10)
             
+            
             Button(action: {
                 dummyGoogle()
             }) {
                 HStack {
-                    Image(systemName: "g.circle")
-                        .font(.title)
-                    Text("Sign in with Google")
-                        .font(.headline)
+                    Image(systemName: "g.circle").font(.title)
+                    Text("Sign in with Google").font(.headline)
                 }
                 .padding()
                 .foregroundColor(.red)
@@ -86,14 +84,13 @@ struct LoginView: View {
             }
             .padding(.top, 10)
             
+            
             Button(action: {
                 dummyGoogle()
             }) {
                 HStack {
-                    Image(systemName: "apple.logo")
-                        .font(.title)
-                    Text("Sign in with AppleID")
-                        .font(.headline)
+                    Image(systemName: "apple.logo").font(.title)
+                    Text("Sign in with AppleID").font(.headline)
                 }
                 .padding()
                 .foregroundColor(.white)
@@ -102,8 +99,6 @@ struct LoginView: View {
                 .cornerRadius(5)
             }
             .padding(.top, 10)
-
-
             
             Spacer()
         }
@@ -111,10 +106,45 @@ struct LoginView: View {
             Alert(title: Text("Authentication"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
         .padding()
+        .onAppear {
+            userManager.fetchUsers()        // ⭐ Load your 8 SWAPI users
+        }
     }
     
     
+    // MARK: - Login Logic
     
+    func loginWithCredentials() {
+        
+        // ⭐ First: Try hard-coded dummy login
+        if username == correctUsername && password == correctPassword {
+            alertMessage = "Login Successful (Dummy User)!"
+            showingAlert = true
+            isAuthenticated = true
+            return
+        }
+        
+        // ⭐ Second: Try SWAPI user login
+        if let matchedUser = userManager.allUsers.first(where: {
+            $0.name.lowercased() == username.lowercased()
+        }) {
+            if password == matchedUser.birth_year {
+                alertMessage = "Login Successful (SWAPI User)!"
+                isAuthenticated = true
+            } else {
+                alertMessage = "Incorrect password."
+                isAuthenticated = false
+            }
+        } else {
+            alertMessage = "User not found."
+            isAuthenticated = false
+        }
+        
+        showingAlert = true
+    }
+    
+    
+    // MARK: - Dummy Authentication Buttons
     
     func dummyFaceID() {
         alertMessage = "Pretending to authenticate… Success!"
@@ -127,20 +157,8 @@ struct LoginView: View {
         showingAlert = true
         isAuthenticated = true
     }
-    
-    func loginWithCredentials() {
-            if username == correctUsername && password == correctPassword {
-                alertMessage = "Login Successful!"
-                isAuthenticated = true
-                
-            } else {
-                alertMessage = "Incorrect username or password."
-                isAuthenticated = false
-            }
-            showingAlert = true
-        }
-    
 }
+
 #Preview {
-    LoginView(isAuthenticated: .constant(false))
+    LoginView(userManager: UserManager(), isAuthenticated: .constant(false))
 }
